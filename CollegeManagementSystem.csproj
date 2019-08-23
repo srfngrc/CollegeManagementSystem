@@ -166,6 +166,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\StudentSRFN\IndexStudent.cshtml" />
     <Content Include="Views\StudentSRFN\Create.cshtml" />
+    <Content Include="Views\StudentSRFN\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

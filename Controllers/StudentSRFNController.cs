@@ -113,23 +113,70 @@ namespace CollegeManagementSystem.Controllers
         // GET: StudentSRFN/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            SqlConnection connEditGet = new SqlConnection();
+            connEditGet.ConnectionString = ConfigurationManager.ConnectionStrings["ExamConnectionSRFN"].ConnectionString;
+            StudentSRFN OperationToEdit = new StudentSRFN();
+
+            try
+            {
+                connEditGet.Open();
+                string queryEDITgetExam = "SELECT * FROM Students WHERE StudentId =" + id + ";";
+                SqlCommand commEditGetOperations = new SqlCommand(queryEDITgetExam, connEditGet);
+                SqlDataReader DReditGetOp = commEditGetOperations.ExecuteReader();
+
+                while (DReditGetOp.Read())
+                {
+                    OperationToEdit.FirstName = DReditGetOp["FirstName"].ToString();
+                    OperationToEdit.LastName = DReditGetOp["LastName"].ToString();
+                    OperationToEdit.BirthDate = Convert.ToDateTime(DReditGetOp["BirthDate"]);
+                    OperationToEdit.EmailAddr = DReditGetOp["EmailAddr"].ToString();
+                    OperationToEdit.Country = DReditGetOp["Country"].ToString();
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                connEditGet.Close();
+            }
+            return View(OperationToEdit);
         }
 
         // POST: StudentSRFN/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(int id, FormCollection collectionExam)
         {
+            SqlConnection connEditPostStu = new SqlConnection();
+            connEditPostStu.ConnectionString = ConfigurationManager.ConnectionStrings["ExamConnectionSRFN"].ConnectionString;
+            StudentSRFN Modifiedstudent = new StudentSRFN();
+
             try
             {
-                // TODO: Add update logic here
+                connEditPostStu.Open();
 
-                return RedirectToAction("Index");
+                string queryEDITexam = "UPDATE Students SET " +
+                "FirstName = '" + collectionExam["FirstName"] + "', " +
+                "LastName = '" + collectionExam["LastName"] + "', " +
+                "BirthDate = '" + Convert.ToDateTime(collectionExam["BirthDate"]) + "', " +
+                "EmailAddr = '" + collectionExam["EmailAddr"] + "', " +
+                "Country = '" + collectionExam["Country"] + "' " +
+                "WHERE StudentId = " + id + ";";
+
+                SqlCommand commandEDITpostOp = new SqlCommand(queryEDITexam, connEditPostStu);
+                commandEDITpostOp.ExecuteNonQuery();
+
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return null;
             }
+            finally
+            {
+                connEditPostStu.Close();
+            }
+            return RedirectToAction("IndexStudent");
         }
 
         // GET: StudentSRFN/Delete/5
