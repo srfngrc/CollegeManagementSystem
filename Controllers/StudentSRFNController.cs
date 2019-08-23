@@ -39,7 +39,7 @@ namespace CollegeManagementSystem.Controllers
                     newStudent.StudentId = int.Parse(myUsersResults["StudentId"].ToString());
                     newStudent.FirstName = myUsersResults["FirstName"].ToString();
                     newStudent.LastName = myUsersResults["LastName"].ToString();
-                    newStudent.BirthDate = (DateTime)myUsersResults["BirthDate"]; 
+                    newStudent.BirthDate = (DateTime)myUsersResults["BirthDate"];
                     newStudent.EmailAddr = myUsersResults["EmailAddr"].ToString();
                     newStudent.Country = myUsersResults["Country"].ToString();
                     myStudents.Add(newStudent);
@@ -66,25 +66,50 @@ namespace CollegeManagementSystem.Controllers
         // GET: StudentSRFN/Create
         public ActionResult Create()
         {
-            return View();
+            return View("");
         }
 
         // POST: StudentSRFN/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(FormCollection collectionExam)
         {
+            StudentSRFN newStudent = new StudentSRFN();
+            SqlConnection connCREATEpost = new SqlConnection();
             try
             {
-                // TODO: Add insert logic here
+                connCREATEpost.ConnectionString = ConfigurationManager.ConnectionStrings["ExamConnectionSRFN"].ConnectionString;
 
-                return RedirectToAction("Index");
+                newStudent.FirstName = collectionExam["FirstName"];
+                newStudent.LastName = collectionExam["LastName"];
+                newStudent.BirthDate = Convert.ToDateTime(collectionExam["BirthDate"].ToString());
+                newStudent.EmailAddr = collectionExam["EmailAddr"];
+                newStudent.Country = collectionExam["Country"];
+
+                string queryCREATEnew = "INSERT INTO Students (FirstName,LastName,BirthDate,EmailAddr,Country)" +
+                    " VALUES ('" +
+                    newStudent.FirstName + "','" +
+                    newStudent.LastName + "','" +
+                    newStudent.BirthDate + "','" +
+                    newStudent.EmailAddr + "','" +
+                    newStudent.Country + "');";
+
+                connCREATEpost.Open();
+
+                SqlCommand commCREATEpost = new SqlCommand(queryCREATEnew, connCREATEpost);
+                commCREATEpost.ExecuteNonQuery();
+
+                return RedirectToAction("IndexStudent");
             }
-            catch
+            catch (Exception ex)
             {
                 return View();
             }
-        }
+            finally
+            {
+                connCREATEpost.Close();
+            }
 
+        }
         // GET: StudentSRFN/Edit/5
         public ActionResult Edit(int id)
         {
@@ -131,20 +156,5 @@ namespace CollegeManagementSystem.Controllers
             return RedirectToAction("IndexStudent");
         }
 
-        //// POST: StudentSRFN/Delete/5
-        //[HttpPost]
-        //public ActionResult Delete(int id, FormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add delete logic here
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
     }
 }
