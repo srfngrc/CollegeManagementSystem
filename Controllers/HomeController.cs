@@ -10,6 +10,7 @@ namespace CollegeManagementSystem.Controllers
     {
         public ActionResult Index()
         {
+            RedirectToAction("Index");
             return View();
         }
 
