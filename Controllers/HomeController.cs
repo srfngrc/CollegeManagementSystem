@@ -10,11 +10,17 @@ namespace CollegeManagementSystem.Controllers
     {
         public ActionResult Index()
         {
-            RedirectToAction("Index");
             return View();
         }
 
-        public ActionResult About()
+        [HttpPost]
+        public ActionResult Index(FormCollection collection)
+        {
+            RedirectToAction("StudentSRFN/IndexStudent");
+            return View();
+        }
+
+            public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
 
